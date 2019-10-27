@@ -1,0 +1,16 @@
+[
+{
+  "modid": "SimpleWorldTimer",
+  "name": "Simple World Timer",
+  "description": "Configurable timer for displaying world, in-game or system time.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authors": ["FoxAhead"],
+  "credits": "The Forge and FML guys, for making this mod",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
