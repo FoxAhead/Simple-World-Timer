@@ -115,6 +115,9 @@ public class Timer {
       fr.drawString(outText1, x, y, color, true);
       y += fr.FONT_HEIGHT;
     }
+    //Map map = this.mc.statFileWriter.func_77445_b();
+    //Integer integer = (Integer)map.get(StatList.minutesPlayedStat);
+    //outText2 = Integer.toString(integer);
     if (!outText2.isEmpty()) {
       textW = fr.getStringWidth(outText2);
       x     = (sWidth - textW - 1) * xPosition / 100 + 1;
@@ -126,30 +129,36 @@ public class Timer {
     if (!pattern1.isEmpty()) {
       outText1 = sdf1.format(date);
       if (needsPostFormat1) {
-        outText1 = postFormatOutText(ticks, outText1);
+        outText1 = postFormatOutText(ticks, date, outText1);
       }
     }
     if (!pattern2.isEmpty()) {
       outText2 = sdf2.format(date);
       if (needsPostFormat2) {
-        outText2 = postFormatOutText(ticks, outText2);
+        outText2 = postFormatOutText(ticks, date, outText2);
       }
     }
   }
 
-  private String postFormatOutText(long parTicks, String outText) {
-    long ticks = parTicks;
-    long days  = 0;
+  private String postFormatOutText(long parTicks, Date date, String outText) {
+    long days            = 0; // &d
+    long totalDaysOfYear = 0; // &D
+    long totalYears      = 0; // &Y
     switch (this.clockType) {
       case ConfigSWT.CLOCK_TYPE_TOTAL_WORLD :
-        days = ticks / 1728000L;// (20 * 60 * 60 * 24);
+        days = parTicks / 1728000L; // (One real day = 20 ticks * 60 seconds * 60 minutes * 24 hours)
         break;
       case ConfigSWT.CLOCK_TYPE_MINECRAFT :
-        days = (ticks + 30000L) / 24000L;// (20 * 60 * 60 * 24);
+        days = (parTicks + 30000L) / 24000L; // (One game day = 24000 ticks)
+        Calendar cal = Calendar.getInstance(TZ_UTC);
+        cal.setTime(date);
+        cal.add(Calendar.HOUR, -6); 
+        totalYears = cal.get(Calendar.YEAR) - this.startYear;
+        cal.add(Calendar.YEAR, (int) -totalYears);
+        totalDaysOfYear = cal.get(Calendar.DAY_OF_YEAR) - 1;
         break;
     }
-    ticks %= 20L;
-    return Formatter.format(outText, days, ticks, parTicks);
+    return Formatter.format(outText, parTicks, parTicks % 20L, days, totalDaysOfYear, totalYears);
   }
 
   private Date convertTicksToDate(long parTicks) {
