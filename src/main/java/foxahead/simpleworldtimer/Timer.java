@@ -3,6 +3,7 @@ package foxahead.simpleworldtimer;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -152,8 +153,10 @@ public class Timer {
         days = (parTicks + 30000L) / 24000L; // (One game day = 24000 ticks)
         Calendar cal = Calendar.getInstance(TZ_UTC);
         cal.setTime(date);
-        cal.add(Calendar.HOUR, -6); 
-        totalYears = cal.get(Calendar.YEAR) - this.startYear;
+        cal.add(Calendar.HOUR, -6);
+        totalYears = ((cal.get(Calendar.ERA) == GregorianCalendar.AD)
+          ? cal.get(Calendar.YEAR)
+          : -cal.get(Calendar.YEAR)) - ((this.startYear == 0) ? 1 : this.startYear);
         cal.add(Calendar.YEAR, (int) -totalYears);
         totalDaysOfYear = cal.get(Calendar.DAY_OF_YEAR) - 1;
         break;
