@@ -34,4 +34,5 @@ hs_err_pid*
 /run
 build.cmd
 
+# Other
 *.xlsx

@@ -7,7 +7,22 @@ public class Formatter {
   private static int    i;
   private static char   c;
 
-  public static String format(String parText, long d, long t, long w) {
+  /**
+   * @param parText
+   *          - text to format
+   * @param w
+   *          - &t Total ticks from zero tick
+   * @param t
+   *          - &t current two-sign ticks in current second (00-19)
+   * @param d
+   *          - &d Total days from zero tick
+   * @param dd
+   *          - &D total days of year
+   * @param yy
+   *          - &Y total years from start year
+   * @return - Formatted string
+   */
+  public static String format(String parText, long w, long t, long d, long dd, long yy) {
     text   = parText;
     length = parText.length();
     i      = -1;
@@ -27,13 +42,13 @@ public class Formatter {
           continue;
         }
         if (c == ']') {
-          if(!hasValue) {
+          if (!hasValue) {
             out.append("[");
           }
           if (!hasValue || nonZero) {
             out.append(part);
           }
-          if(!hasValue) {
+          if (!hasValue) {
             out.append("]");
           }
           buffer = out;
@@ -42,9 +57,9 @@ public class Formatter {
         if (c == '&') {
           getNextChar();
           switch (c) {
-            case 'd' :
-              buffer.append(Long.toString(d));
-              nonZero |= d != 0;
+            case 'w' :
+              buffer.append(Long.toString(w));
+              nonZero |= w != 0;
               hasValue = true;
               break;
             case 't' :
@@ -52,9 +67,19 @@ public class Formatter {
               nonZero |= t != 0;
               hasValue = true;
               break;
-            case 'w' :
-              buffer.append(Long.toString(w));
-              nonZero |= w != 0;
+            case 'd' :
+              buffer.append(Long.toString(d));
+              nonZero |= d != 0;
+              hasValue = true;
+              break;
+            case 'D' :
+              buffer.append(Long.toString(dd));
+              nonZero |= dd != 0;
+              hasValue = true;
+              break;
+            case 'Y' :
+              buffer.append(Long.toString(yy));
+              nonZero |= yy != 0;
               hasValue = true;
               break;
           }
