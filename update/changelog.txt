@@ -1,0 +1,5 @@
+1.1.1 - 06.01.2019
+	Added version checking for 1.12 and 1.14
+
+1.1.0 - 11.24.2019
+	New parameters &D (days in year) and &Y (years since start) for Minecraft time
