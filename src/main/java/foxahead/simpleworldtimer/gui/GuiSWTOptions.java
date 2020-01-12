@@ -22,6 +22,7 @@ public class GuiSWTOptions extends GuiScreen implements ISWTSliderObserver {
   private GuiTextField      patternTextField1;
   private GuiTextField      patternTextField2;
   private GuiButton         buttonSwap;
+  private boolean           initialized = false;
   private int               xCoord = 0;
   private int               yCoord = 0;
   private int               yStep  = 24;
@@ -29,6 +30,8 @@ public class GuiSWTOptions extends GuiScreen implements ISWTSliderObserver {
 
   @Override
   public void updateScreen() {
+    if (!initialized)
+      return;
     this.startDateTextField.updateCursorCounter();
     this.patternTextField1.updateCursorCounter();
     this.patternTextField2.updateCursorCounter();
@@ -83,6 +86,7 @@ public class GuiSWTOptions extends GuiScreen implements ISWTSliderObserver {
     this.buttonList.add(buttonPause = new GuiButton(7, xCoord + 136, (int) (yCoord + yStep * 5), 30, 20, "||"));
     this.buttonList.add(buttonStop = new GuiButton(8, xCoord + 170, (int) (yCoord + yStep * 5), 30, 20, "[]"));
     updateButtons();
+    initialized = true;
   }
 
   @Override
@@ -198,6 +202,8 @@ public class GuiSWTOptions extends GuiScreen implements ISWTSliderObserver {
 
   @Override
   public void drawScreen(int par1, int par2, float par3) {
+    if (!initialized)
+      return;
     this.drawDefaultBackground();
     this.drawCenteredString(this.fontRenderer, I18n.getString("options.swt.title"), this.width / 2, yCoord, COLOR1);
     if (smallButtonClockType.getIndex() == ConfigSWT.CLOCK_TYPE_MINECRAFT) {
