@@ -1,0 +1,16 @@
+[
+{
+  "modid": "SimpleWorldTimer",
+  "name": "Simple World Timer",
+  "description": "Configurable timer for displaying world, in-game or system time.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "https://www.curseforge.com/minecraft/mc-mods/simple-world-timer/",
+  "updateUrl": "",
+  "authors": ["FoxAhead"],
+  "credits": "Forge, FML, MCP",
+  "logoFile": "assets/simpleworldtimer/logo.png",
+  "screenshots": [],
+  "dependencies": []
+}
+]

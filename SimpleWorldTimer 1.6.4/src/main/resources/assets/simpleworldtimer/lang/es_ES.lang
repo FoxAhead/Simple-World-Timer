@@ -1,0 +1,15 @@
+commands.swt.usage=Use /swt to open Simple World Timer options screen
+options.swt.title=Configuraciones del Simple World Timer
+options.swt.enable=Activado
+options.swt.autoHide=Auto-escondite
+options.swt.preset=Preestablecido
+options.swt.preset0=Hora total del mundo
+options.swt.preset1=Hora del Minecraft
+options.swt.preset2=Сronógrafo
+options.swt.preset3=Hora del sistema
+options.swt.preset4=Personalizado
+options.swt.clockType0=Total del mundo
+options.swt.clockType1=Minecraft
+options.swt.clockType2=Сronógrafo
+options.swt.clockType3=Sistema
+options.swt.startYear=Año de inicio
