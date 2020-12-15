@@ -13,9 +13,9 @@ public class CommandSWT {
   private static Minecraft mc = Minecraft.getInstance();
 
   public static void register(CommandDispatcher<CommandSource> dispatcher) {
-    //System.out.println("CommandSWT.register");
-    dispatcher.register(Commands.literal("swt").requires((commandSource) -> {
-      return commandSource.getServer().isSinglePlayer() || commandSource.hasPermissionLevel(0);
+    System.out.println("CommandSWT.register");
+    dispatcher.register(Commands.literal("swt").requires((p_198673_0_) -> {
+      return p_198673_0_.getServer().isSinglePlayer() || p_198673_0_.hasPermissionLevel(0);
     }).executes(CommandSWT::displayOptionsScreen));
   }
 
