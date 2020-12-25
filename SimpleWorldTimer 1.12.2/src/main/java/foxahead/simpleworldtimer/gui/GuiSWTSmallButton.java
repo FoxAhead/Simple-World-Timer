@@ -36,9 +36,12 @@ public class GuiSWTSmallButton extends GuiButton {
   }
 
   private void setDisplayString() {
-    this.displayString = (String) variants.get(index);
-    if (!this.text.isEmpty()) {
-      this.displayString = this.text + ": " + this.displayString;
+    try {
+      this.displayString = (String) variants.get(index);
+      if (!this.text.isEmpty()) {
+        this.displayString = this.text + ": " + this.displayString;
+      }
+    } catch (Exception e) {
     }
   }
 

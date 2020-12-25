@@ -7,6 +7,7 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import foxahead.simpleworldtimer.compat.SereneSeasonsSupport;
 import foxahead.simpleworldtimer.gui.GuiSWTOptions;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
@@ -14,26 +15,29 @@ import net.minecraft.client.renderer.GlStateManager;
 
 public class Timer {
 
-  private static final int      UPDATE_INTERVAL   = 10;
-  private static final long     TICKS_AFTER_EPOCH = 1242715392000L;
-  private static final int      WHITE_COLOR       = 0xFFFFFFFF;
-  private static final int      GRAY_COLOR        = 0xFFE0E0E0;
-  private static final TimeZone TZ_UTC            = TimeZone.getTimeZone("UTC");
-  private long                  counter           = 1000000;
-  private int                   startYear         = 1000000;
-  private long                  startTicks        = 0;
-  private Minecraft             mc                = Minecraft.getMinecraft();
-  private String                language          = "";
-  private int                   clockType         = -1;
-  private SimpleDateFormat      sdf1              = new SimpleDateFormat();
-  private SimpleDateFormat      sdf2              = new SimpleDateFormat();
+  private static final int      UPDATE_INTERVAL     = 10;
+  private static final long     TICKS_TO_EPOCH      = 1242715392000L;
+  private static final long     SECONDS_TO_EPOCH    = 62135769600L;
+  private static final long     TICKS_IN_REAL_DAY   = 1728000L;
+  private static final long     SECONDS_IN_REAL_DAY = 86400L;
+  private static final int      WHITE_COLOR         = 0xFFFFFFFF;
+  private static final int      GRAY_COLOR          = 0xFFE0E0E0;
+  private static final TimeZone TZ_UTC              = TimeZone.getTimeZone("UTC");
+  private long                  counter             = 1000000;
+  private int                   startYear           = 1000000;
+  private long                  startTicks          = 0;
+  private Minecraft             mc                  = Minecraft.getMinecraft();
+  private String                language            = "";
+  private int                   clockType           = -1;
+  private SimpleDateFormat      sdf1                = new SimpleDateFormat();
+  private SimpleDateFormat      sdf2                = new SimpleDateFormat();
   private ScaledResolution      sRes;
-  private String                pattern1          = "";
-  private String                pattern2          = "";
-  private boolean               needsPostFormat1  = true;
-  private boolean               needsPostFormat2  = true;
-  private String                outText1          = "";
-  private String                outText2          = "";
+  private String                pattern1            = "";
+  private String                pattern2            = "";
+  private boolean               needsPostFormat1    = true;
+  private boolean               needsPostFormat2    = true;
+  private String                outText1            = "";
+  private String                outText2            = "";
 
   public void drawTick() {
     long ticks     = 0;
@@ -69,10 +73,11 @@ public class Timer {
       updateCache();
       sWidth  = sRes.getScaledWidth();
       sHeight = sRes.getScaledHeight();
+      SereneSeasonsSupport.fetchState(mc.world);
       switch (clockType) {
         case ConfigSWT.CLOCK_TYPE_TOTAL_WORLD :
           ticks = mc.world.getTotalWorldTime();
-          formatOutTexts(ticks, convertTicksToDate(ticks - TICKS_AFTER_EPOCH));
+          formatOutTexts(ticks, convertTicksToDate(ticks, TICKS_IN_REAL_DAY));
           break;
         case ConfigSWT.CLOCK_TYPE_STOPWATCH :
           ticks = mc.world.getTotalWorldTime();
@@ -85,18 +90,23 @@ public class Timer {
             if (ticks == 0)
               color = WHITE_COLOR;
           }
-          formatOutTexts(ticks, convertTicksToDate(ticks - TICKS_AFTER_EPOCH));
+          formatOutTexts(ticks, convertTicksToDate(ticks, TICKS_IN_REAL_DAY));
           break;
         case ConfigSWT.CLOCK_TYPE_MINECRAFT :
           ticks = mc.world.getWorldTime();
-          formatOutTexts(ticks, convertTicksToDate((ticks + 6000L) * 72L - TICKS_AFTER_EPOCH + startTicks));
+          formatOutTexts(ticks, convertTicksToDate((ticks + 6000L) * 72L - TICKS_TO_EPOCH + startTicks));
           break;
         case ConfigSWT.CLOCK_TYPE_SYSTEM :
           formatOutTexts(0, Calendar.getInstance().getTime());
           break;
+        case ConfigSWT.CLOCK_TYPE_SERENE :
+          outText1 = SereneSeasonsSupport.preFormatOutText(pattern1, language);
+          outText2 = SereneSeasonsSupport.preFormatOutText(pattern2, language);
+          postFormatOutTexts(SereneSeasonsSupport.ticks, null);
+          break;
       }
     } catch (Exception e) {
-      //System.out.println(e.toString());
+      // System.out.println(e.toString());
     }
     if (!outText1.isEmpty())
       lines++;
@@ -125,12 +135,20 @@ public class Timer {
   private void formatOutTexts(long ticks, Date date) {
     if (!pattern1.isEmpty()) {
       outText1 = sdf1.format(date);
+    }
+    if (!pattern2.isEmpty()) {
+      outText2 = sdf2.format(date);
+    }
+    postFormatOutTexts(ticks, date);
+  }
+
+  private void postFormatOutTexts(long ticks, Date date) {
+    if (!pattern1.isEmpty()) {
       if (needsPostFormat1) {
         outText1 = postFormatOutText(ticks, date, outText1);
       }
     }
     if (!pattern2.isEmpty()) {
-      outText2 = sdf2.format(date);
       if (needsPostFormat2) {
         outText2 = postFormatOutText(ticks, date, outText2);
       }
@@ -138,16 +156,18 @@ public class Timer {
   }
 
   private String postFormatOutText(long parTicks, Date date, String outText) {
-    long days            = 0; // &d
-    long totalDaysOfYear = 0; // &D
-    long totalYears      = 0; // &Y
+    long     days            = 0; // &d
+    long     totalDaysOfYear = 0; // &D
+    long     totalYears      = 0; // &Y
+    Calendar cal;
     switch (this.clockType) {
       case ConfigSWT.CLOCK_TYPE_TOTAL_WORLD :
-        days = parTicks / 1728000L; // (One real day = 20 ticks * 60 seconds * 60 minutes * 24 hours)
+        days = parTicks / TICKS_IN_REAL_DAY; // (One real day = 20 ticks * 60 seconds * 60 minutes *
+                                             // 24 hours)
         break;
       case ConfigSWT.CLOCK_TYPE_MINECRAFT :
         days = (parTicks + 30000L) / 24000L; // (One game day = 24000 ticks)
-        Calendar cal = Calendar.getInstance(TZ_UTC);
+        cal = Calendar.getInstance(TZ_UTC);
         cal.setTime(date);
         cal.add(Calendar.HOUR, -6);
         totalYears = ((cal.get(Calendar.ERA) == GregorianCalendar.AD)
@@ -156,12 +176,27 @@ public class Timer {
         cal.add(Calendar.YEAR, (int) -totalYears);
         totalDaysOfYear = cal.get(Calendar.DAY_OF_YEAR) - 1;
         break;
+      case ConfigSWT.CLOCK_TYPE_SERENE :
+        days = SereneSeasonsSupport.day;
+        totalDaysOfYear = SereneSeasonsSupport.dayOfYear - 1;
+        break;
     }
-    return Formatter.format(outText, parTicks, parTicks % 20L, days, totalDaysOfYear, totalYears);
+    return Formatter.format(outText,
+                            parTicks,
+                            parTicks % 20L,
+                            days,
+                            totalDaysOfYear,
+                            totalYears,
+                            SereneSeasonsSupport.subSeasonName,
+                            SereneSeasonsSupport.seasonName);
   }
 
   private Date convertTicksToDate(long parTicks) {
     return new Date(parTicks * 50);
+  }
+
+  private Date convertTicksToDate(long parTicks, long parTicksPerDay) {
+    return new Date((SECONDS_IN_REAL_DAY / parTicksPerDay * parTicks - SECONDS_TO_EPOCH) * 1000L);
   }
 
   private void updateCache() {
@@ -180,8 +215,9 @@ public class Timer {
 
   private void createNewSDF() {
     try {
-      sdf1 = new SimpleDateFormat("", new Locale(language.substring(0, 2), language.substring(3, 5)));
-      sdf2 = new SimpleDateFormat("", new Locale(language.substring(0, 2), language.substring(3, 5)));
+      Locale locale = new Locale(language.substring(0, 2), language.substring(3, 5));
+      sdf1 = new SimpleDateFormat("", locale);
+      sdf2 = new SimpleDateFormat("", locale);
     } catch (Exception e) {
       sdf1 = new SimpleDateFormat("");
       sdf2 = new SimpleDateFormat("");
@@ -190,6 +226,7 @@ public class Timer {
       case ConfigSWT.CLOCK_TYPE_TOTAL_WORLD :
       case ConfigSWT.CLOCK_TYPE_STOPWATCH :
       case ConfigSWT.CLOCK_TYPE_MINECRAFT :
+      case ConfigSWT.CLOCK_TYPE_SERENE :
         sdf1.setTimeZone(TZ_UTC);
         sdf2.setTimeZone(TZ_UTC);
         break;
@@ -232,7 +269,7 @@ public class Timer {
           Calendar cal = Calendar.getInstance(TZ_UTC);
           cal.set(newValue, 0, 1, 0, 0, 0);
           cal.set(Calendar.MILLISECOND, 0);
-          this.startTicks = cal.getTimeInMillis() / 50L + TICKS_AFTER_EPOCH;
+          this.startTicks = cal.getTimeInMillis() / 50L + TICKS_TO_EPOCH;
         } catch (Exception e) {
           this.startTicks = 0;
         }

@@ -20,11 +20,13 @@ public class ConfigSWT {
   public static final int           PRESET_MINECRAFT       = 1;
   public static final int           PRESET_STOPWATCH       = 2;
   public static final int           PRESET_SYSTEM          = 3;
-  public static final int           PRESET_CUSTOM          = 4;
+  public static final int           PRESET_SERENE          = 4;
+  public static final int           PRESET_CUSTOM          = 5;
   public static final int           CLOCK_TYPE_TOTAL_WORLD = 0;
   public static final int           CLOCK_TYPE_MINECRAFT   = 1;
   public static final int           CLOCK_TYPE_STOPWATCH   = 2;
   public static final int           CLOCK_TYPE_SYSTEM      = 3;
+  public static final int           CLOCK_TYPE_SERENE      = 4;
   private static Property           enable;
   private static Property           autoHide;
   private static Property           xPosition;
@@ -39,21 +41,24 @@ public class ConfigSWT {
   public static String              patterns[][]           = {{"'[&dd ]'HH:mm:ss", ""},                                  // Total world 
                                                               {"dd.MM.yyyy", "'Day &d' HH:mm"},                          // Minecraft
                                                               {"'[&dd ]'HH:mm:ss.SSS", "'Ticks &w'"},                    // Stopwatch
-                                                              {"dd.MM.yyyy", "HH:mm:ss"}};                               // System
+                                                              {"dd.MM.yyyy", "HH:mm:ss"},                                // System
+                                                              {"dd MMMM hh:mm a", "'&S - &B'"}};                         // Serene Seasons
 
   public static List<String> getPresetList() {
     return Arrays.asList(I18n.format("options.swt.preset0"),
                          I18n.format("options.swt.preset1"),
                          I18n.format("options.swt.preset2"),
                          I18n.format("options.swt.preset3"),
-                         I18n.format("options.swt.preset4"));
+                         I18n.format("options.swt.preset4"),
+                         I18n.format("options.swt.preset5"));
   }
 
   public static List<String> getClockTypeList() {
     return Arrays.asList(I18n.format("options.swt.clockType0"),
                          I18n.format("options.swt.clockType1"),
                          I18n.format("options.swt.clockType2"),
-                         I18n.format("options.swt.clockType3"));
+                         I18n.format("options.swt.clockType3"),
+                         I18n.format("options.swt.clockType4"));
   }
 
   public static boolean getEnable() {
@@ -122,7 +127,11 @@ public class ConfigSWT {
     if (getPreset() == PRESET_CUSTOM) {
       return pattern1.getString();
     } else {
-      return patterns[getPreset()][0];
+      try {
+        return patterns[getPreset()][0];
+      } catch (Exception e) {
+        return "";
+      }
     }
   }
 
@@ -136,7 +145,11 @@ public class ConfigSWT {
     if (getPreset() == PRESET_CUSTOM) {
       return pattern2.getString();
     } else {
-      return patterns[getPreset()][1];
+      try {
+        return patterns[getPreset()][1];
+      } catch (Exception e) {
+        return "";
+      }
     }
   }
 
@@ -193,7 +206,8 @@ public class ConfigSWT {
                                          PRESET_TOTAL_WORLD,
                                          "Timer preset:" + NEW_LINE + "0 - Total World Time" + NEW_LINE
                                            + "1 - Minecraft Time" + NEW_LINE + "2 - Stopwatch" + NEW_LINE
-                                           + "3 - System Time" + NEW_LINE + "4 - Custom configuration");
+                                           + "3 - System Time" + NEW_LINE + "4 - Serene Seasons" + NEW_LINE
+                                           + "5 - Custom configuration");
       clockType      = CONFIGURATION.get("general",
                                          "clockType",
                                          CLOCK_TYPE_TOTAL_WORLD,
@@ -203,8 +217,8 @@ public class ConfigSWT {
                                            + "1 - in-game time provided by getWorldTime() function. Used for day/night cycle."
                                            + NEW_LINE
                                            + "    Can be changed by 'time set' command. 0 ticks equals 6:00 AM. 24000 ticks for one Minecraft day."
-                                           + NEW_LINE + "2 - Manual start/stop" + NEW_LINE + "3 - System clock;"
-                                           + NEW_LINE);
+                                           + NEW_LINE + "2 - Manual start/stop" + NEW_LINE + "3 - System clock"
+                                           + NEW_LINE + "4 - Serene Seasons" + NEW_LINE);
       startYear      = CONFIGURATION.get("general",
                                          "startYear",
                                          1,

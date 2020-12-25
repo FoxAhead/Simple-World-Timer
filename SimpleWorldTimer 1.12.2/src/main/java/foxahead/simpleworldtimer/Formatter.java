@@ -22,7 +22,7 @@ public class Formatter {
    *          - &Y total years from start year
    * @return - Formatted string
    */
-  public static String format(String parText, long w, long t, long d, long dd, long yy) {
+  public static String format(String parText, long w, long t, long d, long dd, long yy, String subSeasonName, String seasonName) {
     text   = parText;
     length = parText.length();
     i      = -1;
@@ -80,6 +80,14 @@ public class Formatter {
             case 'Y' :
               buffer.append(Long.toString(yy));
               nonZero |= yy != 0;
+              hasValue = true;
+              break;
+            case 'B' :
+              buffer.append(subSeasonName);
+              hasValue = true;
+              break;
+            case 'S' :
+              buffer.append(seasonName);
               hasValue = true;
               break;
           }
