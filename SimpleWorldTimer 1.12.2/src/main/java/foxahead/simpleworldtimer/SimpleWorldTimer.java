@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 @Mod(modid = SimpleWorldTimer.MODID, name = "Simple World Timer", version = SimpleWorldTimer.VERSION, updateJSON = SimpleWorldTimer.UPDATE)
 public class SimpleWorldTimer {
   public static final String     MODID   = "simpleworldtimer";
-  public static final String     VERSION = "1.1.3";
+  public static final String     VERSION = "1.1.3.1";
   public static final String     UPDATE  = "https://raw.githubusercontent.com/FoxAhead/Simple-World-Timer/master/update/update.json";
   @Instance(MODID)
   public static SimpleWorldTimer instance;

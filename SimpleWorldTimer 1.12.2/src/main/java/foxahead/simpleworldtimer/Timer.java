@@ -196,7 +196,7 @@ public class Timer {
   }
 
   private Date convertTicksToDate(long parTicks, long parTicksPerDay) {
-    return new Date((SECONDS_IN_REAL_DAY / parTicksPerDay * parTicks - SECONDS_TO_EPOCH) * 1000L);
+    return new Date((parTicks * SECONDS_IN_REAL_DAY / parTicksPerDay - SECONDS_TO_EPOCH) * 1000L);
   }
 
   private void updateCache() {
