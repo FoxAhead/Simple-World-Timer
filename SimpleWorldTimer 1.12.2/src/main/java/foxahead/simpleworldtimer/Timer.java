@@ -15,29 +15,29 @@ import net.minecraft.client.renderer.GlStateManager;
 
 public class Timer {
 
-  private static final int      UPDATE_INTERVAL     = 10;
-  private static final long     TICKS_TO_EPOCH      = 1242715392000L;
-  private static final long     SECONDS_TO_EPOCH    = 62135769600L;
-  private static final long     TICKS_IN_REAL_DAY   = 1728000L;
-  private static final long     SECONDS_IN_REAL_DAY = 86400L;
-  private static final int      WHITE_COLOR         = 0xFFFFFFFF;
-  private static final int      GRAY_COLOR          = 0xFFE0E0E0;
-  private static final TimeZone TZ_UTC              = TimeZone.getTimeZone("UTC");
-  private long                  counter             = 1000000;
-  private int                   startYear           = 1000000;
-  private long                  startTicks          = 0;
-  private Minecraft             mc                  = Minecraft.getMinecraft();
-  private String                language            = "";
-  private int                   clockType           = -1;
-  private SimpleDateFormat      sdf1                = new SimpleDateFormat();
-  private SimpleDateFormat      sdf2                = new SimpleDateFormat();
+  private static final int      UPDATE_INTERVAL          = 10;
+  private static final long     TICKS_TO_EPOCH           = 1242715392000L;
+  private static final long     MILLISECONDS_TO_EPOCH    = 62135769600000L;
+  private static final long     TICKS_IN_REAL_DAY        = 1728000L;
+  private static final long     MILLISECONDS_IN_REAL_DAY = 86400000L;
+  private static final int      WHITE_COLOR              = 0xFFFFFFFF;
+  private static final int      GRAY_COLOR               = 0xFFE0E0E0;
+  private static final TimeZone TZ_UTC                   = TimeZone.getTimeZone("UTC");
+  private long                  counter                  = 1000000;
+  private int                   startYear                = 1000000;
+  private long                  startTicks               = 0;
+  private Minecraft             mc                       = Minecraft.getMinecraft();
+  private String                language                 = "";
+  private int                   clockType                = -1;
+  private SimpleDateFormat      sdf1                     = new SimpleDateFormat();
+  private SimpleDateFormat      sdf2                     = new SimpleDateFormat();
   private ScaledResolution      sRes;
-  private String                pattern1            = "";
-  private String                pattern2            = "";
-  private boolean               needsPostFormat1    = true;
-  private boolean               needsPostFormat2    = true;
-  private String                outText1            = "";
-  private String                outText2            = "";
+  private String                pattern1                 = "";
+  private String                pattern2                 = "";
+  private boolean               needsPostFormat1         = true;
+  private boolean               needsPostFormat2         = true;
+  private String                outText1                 = "";
+  private String                outText2                 = "";
 
   public void drawTick() {
     long ticks     = 0;
@@ -196,7 +196,7 @@ public class Timer {
   }
 
   private Date convertTicksToDate(long parTicks, long parTicksPerDay) {
-    return new Date((parTicks * SECONDS_IN_REAL_DAY / parTicksPerDay - SECONDS_TO_EPOCH) * 1000L);
+    return new Date(parTicks * MILLISECONDS_IN_REAL_DAY / parTicksPerDay - MILLISECONDS_TO_EPOCH);
   }
 
   private void updateCache() {
