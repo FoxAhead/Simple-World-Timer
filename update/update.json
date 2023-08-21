@@ -1,6 +1,8 @@
 {
   	"homepage": "https://www.curseforge.com/minecraft/mc-mods/simple-world-timer/files",
   	"promos": {
+		"1.20.1-latest": "1.1.2-beta",
+		"1.20.1-recommended": "1.1.2-beta",
 		"1.19.3-latest": "1.1.2-beta",
 		"1.19.3-recommended": "1.1.2-beta",
 		"1.18.1-latest": "1.1.2-beta",
@@ -22,6 +24,9 @@
 		"1.6.4-latest": "1.1.2",
 		"1.6.4-recommended": "1.1.2"
   	},
+	"1.20.1": {
+		"1.1.2-beta": "https://raw.githubusercontent.com/FoxAhead/Simple-World-Timer/master/update/changelog.txt"
+	},
 	"1.19.3": {
 		"1.1.2-beta": "https://raw.githubusercontent.com/FoxAhead/Simple-World-Timer/master/update/changelog.txt"
 	},
